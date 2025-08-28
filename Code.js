@@ -1,19 +1,19 @@
 // Ganti ID sheet sesuai dengan milik Anda
-const MASTERDATA_SHEET_ID = "1aw9VjoyTZNbxyvEHl1POQpL653crhHNGUIQ01lNMrFQ";
-const MASTERDATA_SHEET_NAME = "MasterData";
+const MASTERDATA_SHEET_ID = "";
+const MASTERDATA_SHEET_NAME = "";
 
 // disimpan ke drive pribadi
 // const PENDATAAN_SHEET_ID = '13VkXMvKFOcE_T5GW3X57eWLmzjBxnpsl8JbzXI0Qu1E';
 // const PENDATAAN_SHEET_NAME = "FormResponses";
 
 // disimpan ke drive kalimantan responses dan foto
-const PENDATAAN_SHEET_ID = '1JDMCiSSTW08Hy7gClJrQC5Rc6Pj9pgiJ3fXdSliLMAc';
-const PENDATAAN_SHEET_NAME = "FormResponses";
-const PHOTO_FOLDER_ID = "15FsWiWJBr0Lfz9HoUWufpHJLOtxsxj9s";
+const PENDATAAN_SHEET_ID = '';
+const PENDATAAN_SHEET_NAME = "";
+const PHOTO_FOLDER_ID = "";
 
 
 // Sheet khusus untuk antrean (pribadi)
-const QUEUE_SHEET_ID = "1zYoqLJxEkqc8i0esIXpgcMQIPM0Z85sYODyv9D7nWF0"; // ID sheet FormQueue yang baru
+const QUEUE_SHEET_ID = ""; // ID sheet FormQueue yang baru
 
 // folder foto drive pribadi
 // const PHOTO_FOLDER_ID = "1yAu_xOMBwyqvJsUtxYGPzwDeWFdpzuc7";
