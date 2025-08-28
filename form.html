@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pendataan Outlet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+    .main-content {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #007bff;
+      margin-top: 0;
+      margin-bottom: 25px;
+    }
+    h4 {
+      text-align: center;
+      color: #dc3545;
+      margin-bottom: 25px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    select:focus, input[type="text"]:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    }
+    select:disabled, input[type="text"]:disabled {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+    }
+    .radio-group {
+      margin-bottom: 20px;
+    }
+    .radio-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .radio-group input[type="radio"] {
+      margin-right: 8px;
+      width: auto;
+    }
+    .radio-options {
+      display: flex;
+      gap: 15px;
+      margin-top: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+    }
+    button:hover:not(:disabled) {
+      background-color: #0056b3;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    .photo-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    #photoPreview {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* CSS Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1003;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+      box-sizing: border-box;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 25px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 450px;
+      text-align: center;
+      border-radius: 10px;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .close-button {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      line-height: 1;
+    }
+    .close-button:hover,
+    .close-button:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .modal-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .modal-buttons button {
+      width: 120px;
+      margin-bottom: 0;
+    }
+    .loader {
+      border: 5px solid #f3f3f3; /* Light grey */
+      border-top: 5px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 2s linear infinite;
+      margin: 0 auto 10px auto;
+      display: none;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* CSS Dropdown Pencarian */
+    .searchable-dropdown {
+      position: relative;
+    }
+    .search-input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    /* Mengubah gaya untuk elemen select dan input agar memiliki tampilan yang seragam */
+    .search-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      outline: none;
+      box-sizing: border-box;
+      font-size: 16px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236c757d'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 1.5em;
+      cursor: pointer;
+    }
+    
+    .search-input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    }
+    
+    .dropdown-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      max-height: 200px;
+      overflow-y: auto;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+    .dropdown-list-item {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.2s ease;
+    }
+    .dropdown-list-item:last-child {
+      border-bottom: none;
+    }
+    .dropdown-list-item:hover {
+      background-color: #e9ecef;
+    }
+    .location-inputs {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .location-inputs .input-group {
+      flex: 1;
+      min-width: 150px;
+    }
+    
+    /* CSS untuk Sidebar */
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      left: -260px;
+      height: 100%;
+      background-color: #343a40;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      color: white;
+      transition: left 0.3s ease;
+      z-index: 1001;
+      box-sizing: border-box;
+    }
+    .sidebar.active {
+      left: 0;
+    }
+    .sidebar h3 {
+      margin-top: 0;
+      color: white;
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      margin-bottom: 10px;
+    }
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      padding: 10px;
+      background-color: #495057;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    .sidebar ul li a:hover {
+      background-color: #6c757d;
+      text-decoration: none;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+    }
+    
+    /* CSS Khusus untuk Desktop */
+    @media (min-width: 769px) {
+      .sidebar {
+        left: 0;
+      }
+      .main-content {
+        margin-left: 220px;
+      }
+      .mobile-menu-icon {
+        display: none;
+      }
+    }
+
+    /* CSS Khusus untuk Mobile */
+    @media (max-width: 768px) {
+      .mobile-menu-icon {
+        display: flex;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1002;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        color: white;
+        background: #007bff;
+        border-radius: 5px;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5em;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+      }
+      .mobile-menu-icon.active {
+        transform: rotate(90deg);
+      }
+      .main-content {
+        padding-left: 10px;
+      }
+    }
+  </style>
+  
+  <script>
+
+    google.script.run.withSuccessHandler(function(isOnMaintenance) {
+      if (isOnMaintenance) {
+        document.body.innerHTML = `
+          <div style="text-align:center; padding:50px; font-family:sans-serif;">
+            <h1 style="color:#d9534f;">🚧 Form Sedang Maintenance</h1>
+            <p>Mohon maaf, form ini sedang dalam perbaikan. Silakan coba lagi nanti.</p>
+          </div>
+        `;
+      }
+    }).isMaintenance();
+
+    // Fungsi untuk membuka/menutup sidebar
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const hamburgerIcon = document.querySelector('.mobile-menu-icon');
+      
+      const isActive = sidebar.classList.toggle('active');
+      hamburgerIcon.classList.toggle('active');
+      
+      if (isActive) {
+        hamburgerIcon.innerHTML = '&times;';
+        overlay.style.display = 'block';
+      } else {
+        hamburgerIcon.innerHTML = '☰';
+        overlay.style.display = 'none';
+      }
+    }
+
+    let allData = [];
+    
+    // Muat data dari server
+    function loadData() {
+      google.script.run.withSuccessHandler(setupForm).getMasterData();
+    }
+
+    // Siapkan formulir dengan data awal dan event listener
+    function setupForm(data) {
+      allData = data; 
+      
+      const clusters = [...new Set(data.map(item => item.cluster))].filter(Boolean);
+      const clusterSelect = document.getElementById('cluster');
+      
+      clusterSelect.innerHTML = '<option disabled selected value="">Pilih Cluster</option>' +
+        clusters.map(c => `<option value="${c}">${c}</option>`).join('');
+
+      // Mulai dengan menonaktifkan field Salesforce dan Outlet ID
+      document.getElementById('salesforceSearch').disabled = true;
+      document.getElementById('outletSearch').disabled = true;
+
+      clusterSelect.addEventListener('change', onClusterChange);
+      
+      // Listeners untuk field pencarian Salesforce
+      document.getElementById('salesforceSearch').addEventListener('input', onSalesforceInput);
+      document.getElementById('salesforceSearch').addEventListener('focus', onSalesforceInput);
+      
+      // Listeners untuk field pencarian Outlet ID
+      document.getElementById('outletSearch').addEventListener('input', onOutletInput);
+      document.getElementById('outletSearch').addEventListener('focus', onOutletInput);
+      
+      // Menggunakan `querySelectorAll` untuk semua grup radio
+      const radioGroups = document.querySelectorAll('input[type="radio"]');
+      radioGroups.forEach(radio => {
+        radio.addEventListener('change', checkFormValidity);
+      });
+
+      document.getElementById('outletPhoto').addEventListener('change', onFileChange);
+
+      // Sembunyikan daftar dropdown saat mengklik di luar area dropdown
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.searchable-dropdown')) {
+          document.getElementById('salesforceList').style.display = 'none';
+          document.getElementById('outletList').style.display = 'none';
+        }
+      });
+      
+      checkFormValidity();
+    }
+
+    // Tangani perubahan pada dropdown Cluster
+    function onClusterChange() {
+      const salesforceSearch = document.getElementById('salesforceSearch');
+      const outletSearch = document.getElementById('outletSearch');
+
+      // Aktifkan field Salesforce
+      salesforceSearch.disabled = false;
+      salesforceSearch.value = '';
+      document.getElementById('salesforceHidden').value = '';
+
+      // Nonaktifkan field Outlet ID
+      outletSearch.disabled = true;
+      outletSearch.value = '';
+      document.getElementById('outletHidden').value = '';
+
+      document.getElementById('longitude').value = '';
+      document.getElementById('latitude').value = '';
+
+      document.getElementById('salesforceList').innerHTML = '';
+      document.getElementById('outletList').innerHTML = '';
+      
+      onSalesforceInput();
+      checkFormValidity();
+    }
+
+    // Tangani input pada kotak pencarian Salesforce
+    function onSalesforceInput() {
+      const selectedCluster = document.getElementById('cluster').value;
+      const searchTerm = document.getElementById('salesforceSearch').value.toLowerCase();
+      const salesforceList = document.getElementById('salesforceList');
+      
+      salesforceList.innerHTML = '';
+      
+      const dataToFilter = selectedCluster ? allData.filter(d => d.cluster === selectedCluster) : allData;
+      const filteredSales = [...new Set(dataToFilter
+        .filter(d => d.salesforce.toLowerCase().includes(searchTerm))
+        .map(d => d.salesforce))].filter(Boolean);
+
+      if (filteredSales.length > 0 && document.activeElement === document.getElementById('salesforceSearch')) {
+        filteredSales.forEach(s => {
+          const div = document.createElement('div');
+          div.textContent = s;
+          div.classList.add('dropdown-list-item');
+          div.onclick = () => {
+            document.getElementById('salesforceSearch').value = s;
+            document.getElementById('salesforceHidden').value = s;
+            salesforceList.style.display = 'none';
+            onSalesforceChange();
+          };
+          salesforceList.appendChild(div);
+        });
+        salesforceList.style.display = 'block';
+      } else {
+        salesforceList.style.display = 'none';
+      }
+      
+      checkFormValidity();
+    }
+    
+    // Tangani perubahan pada pilihan Salesforce
+    function onSalesforceChange() {
+      const selectedSalesforce = document.getElementById('salesforceHidden').value;
+      const outletSearch = document.getElementById('outletSearch');
+
+      // Aktifkan field Outlet ID
+      outletSearch.disabled = false;
+      outletSearch.value = '';
+      document.getElementById('outletHidden').value = '';
+
+      document.getElementById('longitude').value = '';
+      document.getElementById('latitude').value = '';
+      
+      document.getElementById('outletList').innerHTML = '';
+
+      onOutletInput();
+      checkFormValidity();
+    }
+
+    // Tangani input pada kotak pencarian Outlet ID
+    function onOutletInput() {
+      const selectedCluster = document.getElementById('cluster').value;
+      const selectedSalesforce = document.getElementById('salesforceHidden').value;
+      const searchTerm = document.getElementById('outletSearch').value.toLowerCase();
+      const outletList = document.getElementById('outletList');
+      
+      outletList.innerHTML = '';
+      
+      const dataToFilter = selectedSalesforce ? allData.filter(d => d.cluster === selectedCluster && d.salesforce === selectedSalesforce) : allData;
+      const filteredOutlets = dataToFilter
+        .filter(d => d.namaOutlet.toLowerCase().includes(searchTerm) || d.outletId.toLowerCase().includes(searchTerm));
+
+      if (filteredOutlets.length > 0 && document.activeElement === document.getElementById('outletSearch')) {
+        filteredOutlets.forEach(o => {
+          const div = document.createElement('div');
+          div.textContent = `${o.outletId} - ${o.namaOutlet}`;
+          div.classList.add('dropdown-list-item');
+          div.onclick = () => {
+            document.getElementById('outletSearch').value = `${o.outletId} - ${o.namaOutlet}`;
+            document.getElementById('outletHidden').value = o.outletId;
+            outletList.style.display = 'none';
+            onOutletChange(o);
+          };
+          outletList.appendChild(div);
+        });
+        outletList.style.display = 'block';
+      } else {
+        outletList.style.display = 'none';
+      }
+      checkFormValidity();
+    }
+
+    // Tangani perubahan pada pilihan Outlet ID
+    function onOutletChange(selectedOutlet) {
+      if (selectedOutlet) {
+        document.getElementById('longitude').value = selectedOutlet.longitude;
+        document.getElementById('latitude').value = selectedOutlet.latitude;
+      } else {
+        document.getElementById('longitude').value = '';
+        document.getElementById('latitude').value = '';
+      }
+      checkFormValidity();
+    }
+
+    // Periksa apakah semua field yang diperlukan sudah terisi
+    function checkFormValidity() {
+      const cluster = document.getElementById('cluster').value;
+      const salesforce = document.getElementById('salesforceHidden').value;
+      const outlet = document.getElementById('outletHidden').value;
+      const signshop = document.querySelector('input[name="signshop"]:checked');
+      const spanduk = document.querySelector('input[name="spanduk"]:checked');
+      const priceboard = document.querySelector('input[name="priceboard"]:checked');
+      const postervoice = document.querySelector('input[name="postervoice"]:checked');
+      const posterdigital = document.querySelector('input[name="posterdigital"]:checked');
+      const posterRenewal = document.querySelector('input[name="posterRenewal"]:checked');
+      // Tambahkan pemeriksaan untuk pertanyaan voucher baru
+      const voucher = document.querySelector('input[name="voucher"]:checked');
+      const outletPhoto = document.getElementById('outletPhoto').files.length > 0;
+
+      const submitButton = document.getElementById('submitButton');
+
+      if (cluster && salesforce && outlet && signshop && spanduk && priceboard && postervoice && posterdigital && posterRenewal && voucher && outletPhoto) {
+        submitButton.disabled = false;
+      } else {
+        submitButton.disabled = true;
+      }
+    }
+
+    // Tangani pengiriman formulir
+    async function onSubmit(event) {
+      event.preventDefault();
+
+      showConfirmModal("Apakah Anda Yakin Ingin Mengirim Data Ini?", async () => {
+        const outletId = document.getElementById('outletHidden').value;
+        const selectedOutlet = allData.find(d => d.outletId === outletId);
+        const photoFile = document.getElementById('outletPhoto').files[0];
+
+        if (!selectedOutlet) {
+          showModal("Harap lengkapi semua pilihan dropdown terlebih dahulu.");
+          return;
+        }
+
+        if (!photoFile) {
+          showModal("Harap ambil foto outlet terlebih dahulu.");
+          return;
+        }
+
+        const userLongitude = document.getElementById('userLongitude').value;
+        const userLatitude = document.getElementById('userLatitude').value;
+
+        if (!userLongitude || !userLatitude) {
+          showModal("Harap ambil lokasi pengguna terlebih dahulu.");
+          return;
+        }
+
+        showLoading(true);
+
+        try {
+          const photoDataUrl = await compressImage(photoFile, 800, 800, 0.5);
+
+          const data = {
+            cluster: selectedOutlet.cluster,
+            salesforce: selectedOutlet.salesforce,
+            outletId: selectedOutlet.outletId,
+            namaOutlet: selectedOutlet.namaOutlet,
+            longitude: selectedOutlet.longitude,
+            latitude: selectedOutlet.latitude,
+            userLongitude: userLongitude,
+            userLatitude: userLatitude,
+            signshop: document.querySelector('input[name="signshop"]:checked')?.value || 'Tidak Ada',
+            spanduk: document.querySelector('input[name="spanduk"]:checked')?.value || 'Tidak Ada',
+            priceboard: document.querySelector('input[name="priceboard"]:checked')?.value || 'Tidak Ada',
+            postervoice: document.querySelector('input[name="postervoice"]:checked')?.value || 'Tidak Ada',
+            posterdigital: document.querySelector('input[name="posterdigital"]:checked')?.value || 'Tidak Ada',
+            posterRenewal: document.querySelector('input[name="posterRenewal"]:checked')?.value || 'Tidak Ada',
+            voucher: document.querySelector('input[name="voucher"]:checked')?.value || 'Tidak Ada', // Tambahkan data voucher
+            photo: photoDataUrl
+          };
+
+          google.script.run
+            .withSuccessHandler(() => {
+              showLoading(false);
+              showModal("✅ Data berhasil dikirim dan sedang diproses.");
+              document.getElementById("mainform").reset();
+              onFileChange({ target: { files: [] } }); // Reset pratinjau foto
+              loadData();
+            })
+            .withFailureHandler(function(error) {
+              showLoading(false);
+              showModal("Terjadi kesalahan saat mengirim data: " + error.message);
+            })
+            .submitForm(data);
+
+        } catch (e) {
+          showLoading(false);
+          showModal("Gagal memproses gambar: " + e.message);
+        }
+      });
+    }
+
+    // Dapatkan geolokasi pengguna saat ini
+    function getUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            document.getElementById('userLongitude').value = position.coords.longitude;
+            document.getElementById('userLatitude').value = position.coords.latitude;
+          },
+          () => {
+            showModal("Gagal mendapatkan lokasi. Pastikan GPS aktif dan berikan izin lokasi.");
+          }
+        );
+      } else {
+        showModal("Geolocation tidak didukung oleh browser ini.");
+      }
+    }
+
+    // Picu pengambilan foto
+    function takePhoto() {
+      const fileInput = document.getElementById('outletPhoto');
+      fileInput.click();
+    }
+
+    // Tampilkan pratinjau foto yang diambil
+    function onFileChange(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById('photoPreview');
+      if (!file) {
+        preview.src = '';
+        preview.style.display = 'none';
+        checkFormValidity();
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        checkFormValidity();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Kompres gambar sebelum diunggah
+    function compressImage(file, maxWidth, maxHeight, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxWidth) {
+                height = height * (maxWidth / width);
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width = width * (maxHeight / height);
+                height = maxHeight;
+              }
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+            resolve(compressedBase64);
+          };
+          img.onerror = error => reject(error);
+        };
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // Tampilkan modal loading
+    function showLoading(show) {
+      const modal = document.getElementById('customModal');
+      const modalMessage = document.getElementById('modalMessage');
+      const modalButtons = document.getElementById('modalButtons');
+      const loader = document.getElementById('loader');
+      
+      if (show) {
+        modalMessage.textContent = "Mengirim data...";
+        modalButtons.style.display = 'none';
+        loader.style.display = 'block';
+        modal.style.display = 'block';
+      } else {
+        modalMessage.textContent = "";
+        modalButtons.style.display = 'flex';
+        loader.style.display = 'none';
+        modal.style.display = 'none';
+      }
+    }
+
+    // Tampilkan dialog modal kustom
+    function showModal(message, isConfirm = false, onConfirm = null) {
+      const modal = document.getElementById('customModal');
+      const modalMessage = document.getElementById('modalMessage');
+      const modalButtons = document.getElementById('modalButtons');
+      const loader = document.getElementById('loader');
+
+      modalMessage.textContent = message;
+      modalButtons.innerHTML = '';
+      loader.style.display = 'none';
+
+      if (isConfirm) {
+        const yesBtn = document.createElement('button');
+        yesBtn.textContent = 'Ya';
+        yesBtn.onclick = () => { closeModal(); onConfirm(); };
+        modalButtons.appendChild(yesBtn);
+
+        const noBtn = document.createElement('button');
+        noBtn.textContent = 'Tidak';
+        noBtn.onclick = () => { closeModal(); };
+        modalButtons.appendChild(noBtn);
+      } else {
+        const okBtn = document.createElement('button');
+        okBtn.textContent = 'OK';
+        okBtn.onclick = () => { closeModal(); };
+        modalButtons.appendChild(okBtn);
+      }
+      modal.style.display = 'block';
+    }
+
+    // Tampilkan modal konfirmasi
+    function showConfirmModal(message, onConfirm) {
+      showModal(message, true, onConfirm);
+    }
+
+    // Tutup modal
+    function closeModal() {
+      const modal = document.getElementById('customModal');
+      modal.style.display = 'none';
+    }
+    
+    // Run loadData when the window loads
+    window.addEventListener('load', loadData);
+  </script>
+</head>
+<body>
+  <!-- Sidebar dan tombol menu mobile -->
+  <div class="mobile-menu-icon" onclick="toggleSidebar()">☰</div>
+
+  <?!= include('sidebar'); ?>
+
+  <div id="overlay" onclick="toggleSidebar()"></div>
+  <!-- Akhir Sidebar -->
+
+  <div class="main-content">
+    <div class="container">
+      <h2>Survey Outlet Branding Kalimantan</h2>
+      <form id="mainform" onsubmit="onSubmit(event)">
+
+        <!-- Field Cluster yang diubah agar panahnya sama -->
+        <div class="searchable-dropdown">
+          <label for="cluster">Cluster:</label>
+          <div class="search-input-container">
+            <select id="cluster" class="search-input"></select>
+          </div>
+        </div>
+
+        <!-- Field Salesforce yang diubah untuk tampilan seperti dropdown Excel -->
+        <div class="searchable-dropdown">
+          <label for="salesforceSearch">Salesforce:</label>
+          <div class="search-input-container">
+            <!-- Field input sekarang dinonaktifkan secara default -->
+            <input type="text" id="salesforceSearch" class="search-input" placeholder="Cari Salesforce..." disabled>
+          </div>
+          <input type="hidden" id="salesforceHidden">
+          <div id="salesforceList" class="dropdown-list"></div>
+        </div>
+
+        <!-- Field Outlet ID yang diubah untuk tampilan seperti dropdown Excel -->
+        <div class="searchable-dropdown">
+          <label for="outletSearch">Outlet ID:</label>
+          <div class="search-input-container">
+            <!-- Field input sekarang dinonaktifkan secara default -->
+            <input type="text" id="outletSearch" class="search-input" placeholder="Cari Outlet..." disabled>
+          </div>
+          <input type="hidden" id="outletHidden">
+          <div id="outletList" class="dropdown-list"></div>
+        </div>
+
+        <label for="longitude">Longitude Outlet: </label>
+        <input type="text" id="longitude" disabled>
+
+        <label for="latitude">Latitude Outlet: </label>
+        <input type="text" id="latitude" disabled>
+        
+        <button type="button" onclick="getUserLocation()">Ambil Lokasi Anda</button>
+
+        <div class="location-inputs">
+          <div class="input-group">
+            <label for="userLongitude">Longitude Anda:</label>
+            <input type="text" id="userLongitude" disabled>
+          </div>
+          <div class="input-group">
+            <label for="userLatitude">Latitude Anda:</label>
+            <input type="text" id="userLatitude" disabled>
+          </div>
+        </div>
+
+        <div class="radio-group">
+          <label>Apakah outlet sudah terpasang signshop Telkomsel?</label>
+          <div class="radio-options">
+            <label><input type="radio" name="signshop" value="Ya"> Ya</label>
+            <label><input type="radio" name="signshop" value="Tidak"> Tidak</label>
+          </div>
+        </div>
+
+        <div class="radio-group">
+          <label>Apakah outlet sudah terpasang layar toko Telkomsel?</label>
+          <div class="radio-options">
+            <label><input type="radio" name="spanduk" value="Ya"> Ya</label>
+            <label><input type="radio" name="spanduk" value="Tidak"> Tidak</label>
+          </div>
+        </div>
+
+        <div class="radio-group">
+          <label>Apakah outlet sudah terpasang papan harga Telkomsel?</label>
+          <div class="radio-options">
+            <label><input type="radio" name="priceboard" value="Ya"> Ya</label>
+            <label><input type="radio" name="priceboard" value="Tidak"> Tidak</label>
+          </div>
+        </div>
+
+        <div class="radio-group">
+          <label>Apakah outlet sudah terpasang poster voice Telkomsel?</label>
+          <div class="radio-options">
+            <label><input type="radio" name="postervoice" value="Ya"> Ya</label>
+            <label><input type="radio" name="postervoice" value="Tidak"> Tidak</label>
+          </div>
+        </div>
+
+        <div class="radio-group">
+          <label>Apakah outlet sudah terpasang poster digital Telkomsel?</label>
+          <div class="radio-options">
+            <label><input type="radio" name="posterdigital" value="Ya"> Ya</label>
+            <label><input type="radio" name="posterdigital" value="Tidak"> Tidak</label>
+          </div>
+        </div>
+        
+        <!-- Pertanyaan baru untuk poster broadband -->
+        <div class="radio-group">
+          <label>Apakah outlet sudah terpasang poster broadband Telkomsel?</label>
+          <div class="radio-options">
+            <label><input type="radio" name="posterRenewal" value="Ya"> Ya</label>
+            <label><input type="radio" name="posterRenewal" value="Tidak"> Tidak</label>
+          </div>
+        </div>
+        <!-- Akhir pertanyaan baru -->
+
+        <!-- Pertanyaan baru untuk voucher fisik -->
+        <div class="radio-group">
+          <label>Apakah outlet sudah ada promo voucher fisik bonus kuota WA? (poster, list harga, ataupun dummy salah satu saja)</label>
+          <div class="radio-options">
+            <label><input type="radio" name="voucher" value="Ya"> Ya</label>
+            <label><input type="radio" name="voucher" value="Tidak"> Tidak</label>
+          </div>
+        </div>
+        <!-- Akhir pertanyaan baru -->
+
+        <div class="photo-group">
+          <label>Ambil Foto Outlet:</label>
+          <input type="file" id="outletPhoto" accept="image/*" capture="environment" style="display:none;">
+          <button type="button" onclick="takePhoto()">Ambil Foto</button>
+          <img id="photoPreview" style="max-width: 100%; margin-top: 10px; display: none;">
+        </div>
+
+        <h4>PASTIKAN DATA YANG ANDA INPUT BENAR DAN SESUAI DENGAN KONDISI TER-UPDATE</h4>
+
+        <button type="submit" id="submitButton" disabled>Kirim</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- The Modal -->
+  <div id="customModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal()">&times;</span>
+      <div class="loader" id="loader"></div>
+      <p id="modalMessage"></p>
+      <div id="modalButtons" class="modal-buttons"></div>
+    </div>
+  </div>
+</body>
+</html>
